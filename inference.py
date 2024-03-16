@@ -100,9 +100,14 @@ def _convert_scene_output_to_glb(
         )
 
     rot = np.eye(4)
+    type = ""
+    if as_pointcloud:
+        type = "pointcloud"
+    else:
+        type = "mesh"
     rot[:3, :3] = Rotation.from_euler("y", np.deg2rad(180)).as_matrix()
     scene.apply_transform(np.linalg.inv(cams2world[0] @ OPENGL @ rot))
-    outfile = os.path.join(outdir, f"{scene_name}_scene.glb")
+    outfile = os.path.join(outdir, f"{scene_name}_{type}.glb")
     print("(exporting 3D scene to", outfile, ")")
     scene.export(file_obj=outfile)
     return outfile
@@ -548,8 +553,9 @@ if __name__ == "__main__":
     pts3d = scene.get_pts3d()
     confidence_masks = scene.get_masks()
 
-    # save point cloud and camera poses to local
+    # save mesh,pointcloud and camera poses to local
     get_3D_model_from_scene(f"./estimation/", item, scene)
+    get_3D_model_from_scene(f"./estimation/", item, scene, as_pointcloud=True)
     save_camera_poses(poses, frame_name, f"{item}_poses.json")
     point_cloud = torch.cat(pts3d, dim=0).reshape(-1, 3).detach().cpu().numpy()
     save_point_to_ply(
