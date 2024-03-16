@@ -84,20 +84,20 @@ def _convert_scene_output_to_glb(
         scene.add_geometry(mesh)
 
     # add each camera
-    for i, pose_c2w in enumerate(cams2world):
-        if isinstance(cam_color, list):
-            camera_edge_color = cam_color[i]
-        else:
-            camera_edge_color = cam_color or CAM_COLORS[i % len(CAM_COLORS)]
-        add_scene_cam(
-            scene,
-            pose_c2w,
-            camera_edge_color,
-            None if transparent_cams else imgs[i],
-            focals[i],
-            imsize=imgs[i].shape[1::-1],
-            screen_width=cam_size,
-        )
+    # for i, pose_c2w in enumerate(cams2world):
+    #     if isinstance(cam_color, list):
+    #         camera_edge_color = cam_color[i]
+    #     else:
+    #         camera_edge_color = cam_color or CAM_COLORS[i % len(CAM_COLORS)]
+    #     add_scene_cam(
+    #         scene,
+    #         pose_c2w,
+    #         camera_edge_color,
+    #         None if transparent_cams else imgs[i],
+    #         focals[i],
+    #         imsize=imgs[i].shape[1::-1],
+    #         screen_width=cam_size,
+    #     )
 
     rot = np.eye(4)
     type = ""
@@ -528,7 +528,7 @@ if __name__ == "__main__":
     item = args.item
     resize_image_path = f"sfm_data/{item}_images"
 
-    for filename in sorted(os.listdir(f"sfm_data/{item}_images")):
+    for filename in os.listdir(f"sfm_data/{item}_images"):
         if len(files_path) == num_view:
             break
         files_path.append(os.path.join(resize_image_path, filename))
